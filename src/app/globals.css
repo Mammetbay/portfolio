@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #141414;
+  --foreground: #f5f5f5;
+  --shadow: #141414;
+  --citrus: #E4FD97;
+  --crimson: #FF2A5F;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #141414;
+  color: #f5f5f5;
+  overflow-x: hidden;
+  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glassmorphism Styles (Shadow #141414 base + Citrus #E4FD97 accents) */
+.glass-card {
+  background: rgba(24, 24, 24, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(228, 253, 151, 0.12);
+}
+
+.glass-panel {
+  background: rgba(20, 20, 20, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-nav {
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(228, 253, 151, 0.15);
+}
+
+/* Glow & Accent Utilities */
+.text-glow-citrus {
+  text-shadow: 0 0 25px rgba(228, 253, 151, 0.55);
+}
+
+.text-glow-crimson {
+  text-shadow: 0 0 25px rgba(255, 42, 95, 0.55);
+}
+
+.gradient-text-citrus {
+  background: linear-gradient(135deg, #E4FD97 10%, #FFFFFF 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-crimson {
+  background: linear-gradient(135deg, #FF2A5F 15%, #E4FD97 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-glow-citrus {
+  box-shadow: 0 0 25px -4px rgba(228, 253, 151, 0.28);
+}
+
+.border-glow-crimson {
+  box-shadow: 0 0 25px -4px rgba(255, 42, 95, 0.28);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141414;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 9999px;
+  border: 2px solid #141414;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E4FD97;
+}
+
+/* Keyframes */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 8s infinite ease-in-out;
 }
