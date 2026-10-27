@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         background: "#141414",
-        foreground: "#f5f5f5",
+        foreground: "#F5F5F5",
         shadow: {
           DEFAULT: "#141414",
           50: "#2a2a2a",
@@ -33,12 +33,10 @@ const config: Config = {
           muted: "rgba(255, 42, 95, 0.15)",
         },
       },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "conic-gradient": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
     },
   },

@@ -1,73 +1,67 @@
 # AGENTS.md — Multi-Model Development Protocol & Architecture
 
-> **Proje:** Mammetbay Developer Portfolio v2 (`mammetbay_dev`)  
-> **Konum:** `D:\Workspace\Portfolio v2\mammetbay_dev`  
-> **Teknoloji:** Next.js 16.1.5 (App Router + Turbopack), React 19, TypeScript 5, Tailwind CSS v4, Framer Motion
+> **Project:** Mammetbay Developer Portfolio v2 (`mammetbay_dev`)  
+> **Canonical:** `https://mammetbay.dev`  
+> **Technology:** Next.js 16.1.5 (App Router + Turbopack), React 19, TypeScript 5, Tailwind CSS v4, Framer Motion, GSAP 3
 
 ---
 
-## 1. Hiyerarşik Çoklu Model Orkestrasyonu (Multi-Model Delegation)
+## 1. Hierarchical Multi-Model Orchestration Protocol
 
-Bu projede geliştirme işleri, rollerine ve modellerin uzmanlık alanlarına göre 3 katmanlı bir yapay zeka hiyerarşisiyle yürütülür:
+Development workflows across this repository adhere to a 3-tier autonomous agent hierarchy structured around model strengths and operational responsibilities:
 
 ```mermaid
 flowchart TD
-    User(["👤 Kullanıcı"]) --> Orchestrator["🧠 Baş Mimar & Yönetici\n(Claude Opus 5.5)\n• Mimari analiz ve görev planlama\n• Alt ajanları (Subagent) orkestre etme\n• Kod inceleme ve kalite denetimi"]
+    User(["👤 Engineer / User"]) --> Orchestrator["🧠 Lead Architect & Coordinator\n(Tier-1 / Lead Model)\n• Architectural strategy & decomposition\n• Subagent task orchestration\n• Code review & system consistency audit"]
     
-    Orchestrator -->|Büyük Değişiklik / Yeni Özellik| FeatureCoder["⚡ Ağır Kodlayıcı (Model: 'pro' / Gemini 4 Argon)\n• Yeni bileşen ve sayfalar oluşturma\n• Büyük refactor ve mimari değişiklikler\n• Kapsamlı TypeScript/React mantığı"]
+    Orchestrator -->|Feature Scope / Architectural Redesign| FeatureCoder["⚡ Heavy Feature Engineer (Tier-2 / Model: 'pro')\n• Create complex components & pages\n• Structural refactoring & state orchestration\n• Strict TypeScript data pipelines & WebGL integration"]
     
-    Orchestrator -->|Build / Test / Minör Fix| RapidWorker["🚀 Hızlı Test & İnce Ayar (Model: 'flash' / Gemini 3.8 Flash)\n• 'npm run build' & 'npm run lint' çalıştırma\n• Hata loglarını analiz edip çözme\n• CSS/UI ince ayarları ve minör düzeltmeler"]
+    Orchestrator -->|Build / Typecheck / QA Polish| RapidWorker["🚀 Rapid QA & Verification (Tier-3 / Model: 'flash')\n• Execute 'npm run build' & 'npx tsc --noEmit'\n• Parse error diagnostics & implement immediate fixes\n• CSS adjustments & micro-interaction fine-tuning"]
 
-    FeatureCoder -.->|Kod Değişiklikleri| Orchestrator
-    RapidWorker -.->|Test Sonuçları & Fix| Orchestrator
+    FeatureCoder -.->|Implementation Artifacts| Orchestrator
+    RapidWorker -.->|Verification & Zero-Error Proof| Orchestrator
     Orchestrator --> User
 ```
 
-### Katman 1: Baş Mimar & Planlayıcı (Claude Opus 5.5)
-- **Rolü:** Oturumun ana ajanıdır. Kullanıcı taleplerini karşılar, proje mimarisini korur, kararları planlar ve süreci baştan sona yönetir.
-- **Görev Akışı:**
-  1. Kullanıcıdan gelen talebi analiz eder, gerekirse adımları belirler (`Plan`).
-  2. Kapsamlı kod değişikliklerini doğrudan kendisi yapmak yerine alt ajana (`invoke_subagent`, `Model: 'pro'`) delege eder.
-  3. Kod yazımı tamamlandığında, doğrulama ve test adımlarını hızlı test ajanına (`invoke_subagent`, `Model: 'flash'`) sevk eder.
-  4. Test sonuçlarını değerlendirip kullanıcıya özet rapor sunar.
+### Tier 1: Lead Architect & Coordinator
+- **Role:** Primary session coordinator. Analyzes high-level product and architectural requirements, maintains structural integrity, plans execution milestones, and orchestrates specialized subagents.
+- **Task Lifecycle:**
+  1. Deconstructs user requests into actionable engineering plans.
+  2. Delegates heavy logic and multi-file changes to Tier-2 Feature Engineers (`invoke_subagent`, `Model: 'pro'`).
+  3. Hands off completed changes to Tier-3 QA agents (`invoke_subagent`, `Model: 'flash'`) for automated build verification and linter sweeps.
+  4. Delivers concise architectural reports directly to the user.
 
-### Katman 2: Büyük Değişiklikler & Yeni Özellikler (Gemini 4 Argon - Medium / Model: `pro`)
-- **Tetiklenme:** Yeni sayfa, yeni vitrin bileşeni, interaktif modül ekleme veya mevcut mimaride büyük refactor gerektiğinde.
-- **Ajan Çağrısı:** `invoke_subagent` aracıyla `Model: 'pro'`, `Role: 'Feature Engineer'` olarak başlatılır.
-- **Sorumluluk:** Temiz, tip güvenli (strict TypeScript), Next.js 16 standartlarına uygun kod üretir.
+### Tier 2: Heavy Feature Engineers (Model: `pro`)
+- **Trigger:** Creation of new pages, interactive WebGL2 modules, multi-language internationalization systems, or major component refactors.
+- **Invocation:** Dispatched via `invoke_subagent` with `Model: 'pro'` and `Role: 'Feature Engineer'`.
+- **Responsibilities:** Delivers clean, type-safe (strict TypeScript), and performance-optimized React 19/Next.js 16 code.
 
-### Katman 3: Hızlı Testler, Minör Düzeltmeler & QA (Gemini 3.8 Flash - High / Model: `flash`)
-- **Tetiklenme:** Kod yazıldıktan sonra derleme testi (`npm run build`), TypeScript tip denetimi (`npx tsc --noEmit`), ESLint kontrolü veya küçük stil/metin rötuşları gerektiğinde.
-- **Ajan Çağrısı:** `invoke_subagent` aracıyla `Model: 'flash'`, `Role: 'QA & Rapid Fixer'` olarak başlatılır.
-- **Sorumluluk:** Hızlıdır, terminal komutlarını çalıştırır, olası derleme/lint hatalarını tespit eder ve anında çözer.
-
----
-
-## 2. Görev Yürütme Protokolü (Task Lifecycle)
-
-Bir geliştirme yapılacağı zaman izlenecek standart süreç:
-
-1. **[Opus 5.5] Planlama:** 
-   - İhtiyacı analiz et, değişecek dosyaları belirle.
-2. **[Gemini 4 Argon (pro)] Kodlama:** 
-   - `invoke_subagent` ile kodlama ajanını görevlendir.
-   - İlgili bileşenleri (`src/components/`, `src/app/`) yaz veya güncelle.
-3. **[Gemini 3.8 Flash (flash)] Test & Düzeltme:** 
-   - `invoke_subagent` ile test ajanını görevlendir.
-   - `npm run build` koştur. Sıfır hata (0 error) sağlanana kadar minör rötuşları yap.
-4. **[Opus 5.5] Kabul & Teslimat:** 
-   - Son durumu doğrula, kullanıcıya kısa ve net rapor ver.
+### Tier 3: Rapid QA, Testing & Micro-Fixes (Model: `flash`)
+- **Trigger:** Post-implementation build verification (`npm run build`), TypeScript typecheck (`npx tsc --noEmit`), ESLint audits, and visual fine-tuning.
+- **Invocation:** Dispatched via `invoke_subagent` with `Model: 'flash'` and `Role: 'QA & Rapid Fixer'`.
+- **Responsibilities:** High-speed execution of terminal build commands, log triage, zero-error resolution, and automated formatting.
 
 ---
 
-## 3. Teknoloji Yığını ve Kodlama Standartları
+## 2. Standard Task Execution Lifecycle
 
-- **Next.js 16 (App Router):** Tüm dinamik istemci bileşenlerinin başında mutlaka `'use client';` bulunmalıdır.
-- **Tailwind CSS v4:** Renkler ve değişkenler Tailwind v4 kurallarına (`@theme`, `globals.css`) uygun olmalıdır.
-- **Tasarım Dili (Dark Cyberpunk / Minimal Tech):**
-  - Arka planlar: `#08090C`, `#0D0F14`, `#13161F`
-  - Vurgu Renkleri: Limon Yeşili (`#E4FD97`), Neon Pembe (`#FF2A5F`), Siber Mavi (`#00F0FF`)
-  - Kartlar: `border border-white/10 bg-white/[0.02] backdrop-blur-md`
-- **İkonlar:** `src/components/Icons.tsx` içerisindeki merkezi SVG ikon koleksiyonu kullanılmalıdır.
-- **Tip Güvenliği:** Asla `any` kullanılmamalıdır. `ProjectData`, `TechCategory` gibi arayüzler eksiksiz doldurulmalıdır.
-- **Sıfır Hata Prensibi:** Her değişiklikten sonra `npm run build` hatasız tamamlanmalıdır.
+Every feature, refactor, or optimization follows this lifecycle:
+
+1. **[Architect] Planning:** Analyze the requirement, map file boundaries, and verify ownership constraints.
+2. **[Feature Engineer] Coding:** Dispatch `pro` subagent to write or update target components in `src/components/`, `src/app/`, or `src/i18n/`.
+3. **[QA Engineer] Verification:** Dispatch `flash` subagent to execute `npm run build` and ensure 0 compilation or lint errors.
+4. **[Architect] Delivery:** Confirm production readiness and output a structured, concise summary.
+
+---
+
+## 3. Technology Stack & Engineering Standards
+
+- **Next.js 16 (App Router):** Dynamic interactive components must explicitly declare `'use client';` at the top of the file.
+- **Tailwind CSS v4:** Utilize `@theme` variables and utility classes in accordance with modern Tailwind v4 specifications (`globals.css`).
+- **Dark Minimal Engineering Design Language:**
+  - Base Surfaces: `#0E0E0E`, `#121212`, `#141414`, `#161616`
+  - Accent Palette: Citrus Lime (`#E4FD97`), Signal Crimson (`#FF2A5F`)
+  - Elevated Cards: `border border-white/10 bg-white/[0.02] backdrop-blur-md`
+- **Iconography:** Use the centralized SVG icon library located at `src/components/Icons.tsx`.
+- **Strict Type Safety:** Never use `any`. Interfaces such as `ProjectData`, `TranslationDictionary`, and `SkillCategory` must be comprehensively typed.
+- **Zero-Error Standard:** Every committed task must pass `npm run build` with zero warnings or errors.

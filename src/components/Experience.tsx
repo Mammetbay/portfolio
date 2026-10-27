@@ -1,138 +1,146 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Briefcase, Calendar, MapPin, CheckCircle2 } from './Icons';
+import React, { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Workflow, CheckCircle2, Cpu, Server, Layers, Terminal } from './Icons';
+import { useLanguage } from '@/i18n/LanguageContext';
 
-interface ExperienceItem {
-  role: string;
-  organization: string;
-  period: string;
-  location: string;
-  highlights: string[];
-  technologies: string[];
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
 }
 
-const experiences: ExperienceItem[] = [
-  {
-    role: 'Lead AI Engineer & Full-Stack Architect',
-    organization: 'Independent & Client Ventures',
-    period: '2023 — PRESENT',
-    location: 'Remote / Hybrid',
-    highlights: [
-      'Engineered a 41.7M parameter FastConformer CTC speech recognition model from scratch in PyTorch 2.x for low-resource languages, verified across 90 rigorous unit & pipeline tests.',
-      'Developed StudyMate AI, a commercial client-only React Native + Expo application with audio transcription, photo OCR, SM-2 spaced repetition, and adapter-based multi-provider AI.',
-      'Architected resilient microservices utilizing FastAPI, Redis caching, and Docker with sub-10ms response latency for recommendation and search workloads.',
-    ],
-    technologies: ['PyTorch 2.x', 'FastConformer', 'React Native', 'Expo', 'Next.js 16', 'FastAPI', 'Redis'],
-  },
-  {
-    role: 'Senior Full-Stack Developer',
-    organization: 'Software Solutions & Product Engineering',
-    period: '2021 — 2023',
-    location: 'Turkmenistan',
-    highlights: [
-      'Delivered full-cycle enterprise web applications including hospital management systems (Sanly Hassahana) and educational platforms (Taryh Gollanma).',
-      'Designed PostgreSQL schemas, complex relational indices, and role-based access control (RBAC) layers ensuring data integrity.',
-      'Constructed modular, responsive user interfaces with Next.js, TypeScript, and modern CSS frameworks, improving page load metrics by 40%.',
-    ],
-    technologies: ['Next.js', 'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Tailwind CSS', 'Docker'],
-  },
-  {
-    role: 'Machine Learning & Speech Corpus Researcher',
-    organization: 'Language Technology Initiatives',
-    period: '2020 — 2021',
-    location: 'Turkmenistan',
-    highlights: [
-      'Curated and indexed 119,847+ audio metadata entries and 230 hours of speech data for low-resource speech recognition and TTS acoustic models.',
-      'Trained custom SentencePiece Unigram tokenizers (1,024 pieces) and phoneme alignment dictionaries.',
-      'Implemented data augmentation pipelines with SpecAugment and HTK Mel filterbanks to boost acoustic model resilience.',
-    ],
-    technologies: ['Python', 'SentencePiece', 'TorchCodec', 'Audio DSP', 'FFmpeg', 'PyTest'],
-  },
-];
+const stepIconMap: Record<string, React.FC<{ size?: number; className?: string }>> = {
+  '01': Cpu,
+  '02': Server,
+  '03': Layers,
+  '04': Terminal,
+};
 
 const Experience: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { t } = useLanguage();
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.from('.blueprint-card', {
+          opacity: 0,
+          y: 28,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 82%',
+          },
+        });
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 w-full max-w-5xl mx-auto z-20" id="experience">
-      {/* Header with Scroll-in motion */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="flex flex-col items-center mb-16 text-center"
-      >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] text-[11px] text-neutral-400 font-mono uppercase tracking-widest border border-white/[0.08] mb-3 backdrop-blur-xl">
-          <Briefcase size={12} className="text-[#E4FD97]" />
-          <span>Trajectory</span>
+    <section
+      ref={sectionRef}
+      className="py-20 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto z-20"
+      id="experience"
+    >
+      {/* Editorial Asymmetric Section Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 mb-12 border-b border-white/[0.08]">
+        <div>
+          <div className="inline-flex items-center gap-2 font-mono text-xs text-[#E4FD97] uppercase tracking-widest mb-3">
+            <Workflow size={14} className="shrink-0" />
+            <span className="break-words">{t.experience.eyebrow}</span>
+          </div>
+          <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-white tracking-[-0.03em] leading-tight break-words">
+            {t.experience.title}
+          </h2>
         </div>
-        <h2 className="text-3xl sm:text-5xl font-semibold text-white tracking-[-0.03em]">
-          Engineering Background
-        </h2>
-        <p className="text-neutral-400 text-sm sm:text-base max-w-xl mt-3 leading-relaxed font-normal">
-          A track record of solving technical bottlenecks across deep learning research and high-scale software engineering.
+        <p className="text-neutral-400 text-sm sm:text-base max-w-md leading-relaxed font-sans break-words">
+          {t.experience.description}
         </p>
-      </motion.div>
+      </div>
 
-      {/* Timeline */}
-      <div className="relative border-l border-white/[0.08] ml-4 sm:ml-8 space-y-10">
-        {experiences.map((exp, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, delay: 0.08 * index, ease: [0.22, 1, 0.36, 1] }}
-            className="relative pl-6 sm:pl-10 group"
-          >
-            {/* Timeline Dot */}
-            <div className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-[#141414] border-2 border-[#E4FD97] group-hover:scale-125 transition-transform duration-300" />
+      {/* 2x2 Architectural Blueprint Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {t.experience.pillars.map((pillar) => {
+          const Icon = stepIconMap[pillar.step] || Cpu;
+          const isCrimson = pillar.accent === '#FF2A5F';
+          return (
+            <div
+              key={pillar.step}
+              className={`blueprint-card min-w-0 overflow-hidden rounded-2xl ${
+                isCrimson ? 'bento-card bento-card-crimson' : 'bento-card'
+              } p-5 sm:p-8 flex flex-col justify-between`}
+            >
+              <div className="min-w-0">
+                {/* Top Pillar Header */}
+                <div className="flex items-center justify-between gap-3 pb-4 mb-5 border-b border-white/[0.07] min-w-0">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <span
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-display font-extrabold text-sm shrink-0 ${
+                        isCrimson
+                          ? 'bg-[#FF2A5F]/15 text-[#FF2A5F] border border-[#FF2A5F]/30'
+                          : 'bg-[#E4FD97]/15 text-[#E4FD97] border border-[#E4FD97]/30'
+                      }`}
+                    >
+                      {pillar.step}
+                    </span>
+                    <span className="font-mono text-[10px] sm:text-xs text-neutral-400 tracking-wider break-all sm:break-normal">
+                      {pillar.code}
+                    </span>
+                  </div>
+                  <Icon
+                    size={18}
+                    className={`${isCrimson ? 'text-[#FF2A5F]' : 'text-[#E4FD97]'} shrink-0`}
+                  />
+                </div>
 
-            {/* Experience Card */}
-            <div className="rounded-3xl bg-[#181818]/70 backdrop-blur-xl p-6 sm:p-8 border border-white/[0.08] hover:border-white/[0.16] transition-colors shadow-xl shadow-black/40">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <h3 className="text-xl sm:text-2xl font-semibold text-white tracking-[-0.02em]">
-                  {exp.role}
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-white tracking-[-0.02em] break-words">
+                  {pillar.title}
                 </h3>
-                <span className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1 rounded-full bg-white/[0.04] text-neutral-300 border border-white/[0.06] w-fit">
-                  <Calendar size={11} className="text-[#E4FD97]" />
-                  {exp.period}
-                </span>
+                <p
+                  className={`font-mono text-xs mt-1 mb-4 break-words ${
+                    isCrimson ? 'text-[#FF2A5F]' : 'text-[#E4FD97]'
+                  }`}
+                >
+                  {pillar.subtitle}
+                </p>
+
+                <p className="text-neutral-300 text-sm leading-relaxed font-sans mb-5 break-words">
+                  {pillar.description}
+                </p>
+
+                {/* Dataflow Diagram Strip */}
+                <div className="p-3.5 rounded-xl bg-[#111111] border border-white/[0.07] font-mono text-[11px] text-neutral-200 mb-5 overflow-x-auto">
+                  <span className="text-[10px] text-neutral-500 uppercase block mb-1">
+                    {t.experience.dataflowLabel}
+                  </span>
+                  <code className="whitespace-pre-wrap sm:whitespace-nowrap break-words">{pillar.diagram}</code>
+                </div>
               </div>
 
-              <div className="flex items-center gap-3 text-xs font-medium text-neutral-400 mb-5 font-mono">
-                <span className="text-white font-medium">{exp.organization}</span>
-                <span className="text-white/20">•</span>
-                <span className="flex items-center gap-1 text-neutral-400">
-                  <MapPin size={11} /> {exp.location}
-                </span>
-              </div>
-
-              {/* Highlights */}
-              <ul className="space-y-2.5 mb-6 text-neutral-300 text-xs sm:text-sm leading-relaxed font-normal">
-                {exp.highlights.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    <CheckCircle2 size={14} className="text-[#E4FD97] shrink-0 mt-0.5" />
-                    <span>{item}</span>
+              {/* Engineering Principles Checklist */}
+              <ul className="space-y-2.5 pt-4 border-t border-white/[0.07] text-xs text-neutral-300 font-mono">
+                {pillar.principles.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
+                    <CheckCircle2
+                      size={13}
+                      className={`${isCrimson ? 'text-[#FF2A5F]' : 'text-[#E4FD97]'} shrink-0 mt-0.5`}
+                    />
+                    <span className="break-words">{item}</span>
                   </li>
                 ))}
               </ul>
-
-              {/* Tech Badges */}
-              <div className="flex flex-wrap gap-1.5 pt-4 border-t border-white/[0.06]">
-                {exp.technologies.map((tech, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2.5 py-0.5 text-[11px] font-mono rounded-lg bg-white/[0.03] text-neutral-400 border border-white/[0.06]"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
             </div>
-          </motion.div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

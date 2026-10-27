@@ -1,0 +1,128 @@
+# Mammetbay Mammetbayev — Software Architect & AI Systems Engineer
+> Production Canonical URL: https://mammetbay.dev
+> Contact Endpoint: mammetbaydev@gmail.com
+> Geographic Base: Turkmenistan (TM) & Global Remote
+> Supported Languages: Turkmen (tk), English (en), Russian (ru), Turkish (tr)
+
+## Profile & Identity Summary
+- **Full Legal Name:** Mammetbay Mammetbayev
+- **Alternate Scripts & Spellings:** Mämmetbaý Mämmetbaýew (Turkmen), Мамметбай Мамметбаев (Russian), Mammetbay
+- **Professional Role:** Software Architect & AI Systems Engineer
+- **Core Specialization:** Distributed AI & Recommendation Microservices, Schema-Isolated Multi-Tenant B2B SaaS, Local-First Cross-Platform Mobile Applications, and Neural Speech AI Research (ASR & TTS).
+- **Verified Official Links:**
+  - Portfolio & System Specifications: https://mammetbay.dev
+  - GitHub: https://github.com/Mammetbay
+  - Instagram: https://instagram.com/mammetbay_dev
+  - Google Play Developer Console: https://play.google.com/store/apps/developer?id=Mammetbayev+M.
+
+---
+
+## Architectural Methodology & Engineering Pillars
+
+### 1. Zero Cold-Start Audio ML & Event Streaming
+- **Implementation:** Decoupling real-time acoustic feature extraction from multi-horizon storage.
+- **Topology:** Streaming signed audio URLs into memory without saving raw files to disk; running 13 ONNX models (BPM, key, mood, valence/arousal, genre, 256d & 1280d acoustic embeddings, duplicate detection).
+- **Data Pipeline:** Qdrant (256d vector search) + PostgreSQL (1280d profiles) paired with Kafka buffering play, skip, and like signals into ClickHouse (ALS collaborative filtering) and Valkey (live session state) to solve cold-start for newly uploaded tracks from song #1.
+
+### 2. Schema-per-Tenant Isolation & Zero-Trust RBAC
+- **Implementation:** Strict database isolation where each tenant operates within its dedicated PostgreSQL schema (`tenant_<subdomain>`).
+- **Context Injection:** Tenant context bound via Node.js `AsyncLocalStorage` within custom NestJS middleware, eliminating request-scoped dependency injection overhead.
+- **Security:** Privilege escalation prevented at the API boundary (403 Forbidden for root super-admin registration); root administration seeded strictly through secure CLI scripts.
+
+### 3. Local-First Mobile & Multi-Provider AI Adapters
+- **Implementation:** Offline-first architecture built with React Native and Expo Router, powered by embedded SQLite with versioned DDL migrations.
+- **AI Resilience:** Runtime multi-provider AI adapters supporting Groq, OpenAI, Google Gemini, and OpenRouter, paired with deterministic Whisper STT hallucination filters and SM-2 Lite spaced repetition scheduling.
+- **Cross-Platform Delivery:** Single TypeScript codebase compiled for Google Play Android (AAB/APK) and static web deployments.
+
+### 4. Deterministic Media Automation & Zero-Dependency Tooling
+- **Implementation:** Automated programmatic pipelines with strict post-render QA gates.
+- **Audio DSP:** WAV rhythm analysis outputting millisecond-accurate `beats.json` driving Remotion programmatic React video rendering across multiple aspect ratios (9:16 vertical reels and billboard displays).
+- **System Tooling:** Zero-dependency CLI tools utilizing pure Node.js 18+ built-ins to measure TCP/TLS latency, jitter, and throughput against edge endpoints.
+
+---
+
+## Production Systems & Architecture Ledger
+
+### 01. MusicAI — Distributed Audio Profiler & Recommendation Engine
+- **Category:** Distributed AI & ML
+- **Role:** Co-Engineered with Engineering Team (Original Concept & Lead Architect, 3-Engineer Core Team)
+- **Target Integrations:** Major streaming platforms in Turkmenistan (Belet Music, Sazz, Aydym.com, Hinlen) via decoupled HTTP REST APIs.
+- **Architecture:**
+  - Audio Profiler (`:8001`): Streams signed audio URLs in-memory → 13 ONNX models.
+  - Recommendation Engine (`:8002`): Powers Recommended For You, Discover, Today’s Mood, and Infinite Radio.
+  - Telemetry & Inspector (`:8080`): Live audio inspection and recommendation debugging portal.
+- **Tech Stack:** Python 3.12 (uv, ruff, mypy strict), FastAPI, ONNX Runtime (13 Models), Qdrant Vector DB, Apache Kafka, ClickHouse (ALS), Valkey, PostgreSQL, Docker Compose (~8 GB RAM footprint).
+
+### 02. WaaS — B2B Multi-Tenant Platform & Storefront Engine
+- **Category:** B2B SaaS & Systems
+- **Role:** Solo Full-Stack & Database Architect
+- **Production API:** https://waas-api-demo-e67aa57945a7.herokuapp.com/docs
+- **Architecture:** Subdomain / `x-tenant-id` → `TenantMiddleware` → `AsyncLocalStorage` context → `BaseTenantRepository` executing `SET LOCAL search_path TO "tenant_<slug>", public`.
+- **Supported Engines:** ECOMMERCE_STORE, ARTIST_PORTFOLIO (quotes), PROMOTIONAL_LANDING (WhatsApp ordering).
+- **Tech Stack:** NestJS v11, Fastify, TypeORM, PostgreSQL (Schema-per-Tenant), React 19, Vite, TypeScript, Tailwind CSS v4, Heroku.
+
+### 03. Taryh Gollanma — Cross-Platform Historical Encyclopedia
+- **Category:** Mobile & Cross-Platform
+- **Role:** Creator & Lead Mobile/Web Engineer
+- **Live Deployments:**
+  - Web: https://taryhgollanma.netlify.app
+  - Google Play: https://play.google.com/store/apps/developer?id=Mammetbayev+M. (v1.1.2)
+- **Impact:** 8,000+ organic downloads on Google Play Store.
+- **Modules:** Chronological historical eras of Turkmenistan and World History, Strategic Battle Maps (Silk Road, 18th-C Turkestan, WWI/WWII), Rare Archival Photography Vault, Historical Video Archives, Terminology Dictionary, Digital Books, and Offline Bookmarking.
+- **Tech Stack:** React Native, Expo Router, TypeScript, AsyncStorage, Netlify, Google Play Android AAB.
+
+### 04. StudyMate AI — Multi-Modal Student Companion
+- **Category:** Mobile & Cross-Platform (Open Source MIT)
+- **Role:** Lead Mobile & AI Systems Engineer
+- **Repository:** https://github.com/Mammetbay
+- **Architecture:** Audio/Camera Input → Whisper STT (Silence/Hallucination Guard) / Vision OCR → Multi-Provider AI Adapter (Groq / OpenAI / Gemini / OpenRouter) → Local SQLite v4 Storage → SM-2 Lite Spaced Repetition Engine.
+- **Tech Stack:** React Native, Expo SDK 54, TypeScript, expo-sqlite, Whisper STT, Vision OCR, SM-2 Spaced Repetition Algorithm.
+
+### 05. TurkanaKafe (Türkana) — Hospitality Management Ecosystem
+- **Category:** Mobile & Cross-Platform
+- **Role:** Full-Stack & Mobile Architect
+- **Architecture:** 3 synchronized production codebases uniting NestJS v11 + TypeORM + PostgreSQL backend, Next.js web storefront, and cross-platform React Native mobile app (v1.0.1) with real-time Socket.io order updates.
+- **Tech Stack:** NestJS v11, PostgreSQL, Next.js, React Native (Expo), NativeWind, Zustand, TanStack Query, Socket.io.
+
+### 06. Neural ASR & Acoustic TTS Pipeline
+- **Category:** Distributed AI & ML
+- **Role:** University AI Research Lead (Confidential R&D)
+- **Architecture:** Native speech recognition and speech synthesis models engineered from scratch for low-resource Turkic phonetics.
+- **ASR Engine:** 41,754,049 parameter FastConformer-style CTC recognizer (8x depthwise subsampling, 12 Conformer blocks, 1,024-piece SentencePiece Unigram tokenizer) in native PyTorch 2.x.
+- **TTS Engine:** 230-hour curated acoustic speech synthesis dataset with phoneme alignment and custom DSP vocoder.
+- **Verification:** 90/90 unit and distributed multi-process PyTorch DDP verification tests passed.
+
+### 07. Google Flow + Remotion Ad Video Pipeline
+- **Category:** Distributed AI & ML
+- **Role:** Automation & Creative Systems Architect
+- **Architecture:** 7-stage programmatic video pipeline transforming client `brief.json` into broadcast-ready 9:16 vertical Reels and billboard advertising.
+- **DSP Engine:** Custom WAV audio beat detector outputting frame-accurate `beats.json` driving 4 dynamic Remotion templates with automated FFprobe QA auditing.
+- **Tech Stack:** Remotion, Google Flow AI, TypeScript, Audio Beat DSP, Node.js MJS, FFmpeg, FFprobe.
+
+### 08. AI Photo Studio SaaS Platform
+- **Category:** B2B SaaS & Systems
+- **Role:** Product & SaaS System Architect
+- **Architecture:** Mobile-first generative photography SaaS enabling users to upload 4 facial reference photos and generate studio portraits across hundreds of curated scenes while preserving facial identity.
+- **Tech Stack:** Generative AI SaaS Architecture, Identity Preservation Embedding, Prompt Studio, Media Asset Management, Mobile-First Web.
+
+### 09. OSAI — Japanese Speaking AI Partner
+- **Category:** Mobile & Cross-Platform
+- **Role:** Mobile & AI Backend Engineer
+- **Architecture:** Interactive voice-driven mobile application for Japanese language practice featuring bidirectional English-Japanese dialogue, real-time grammar error analysis, and pronunciation coaching.
+- **Tech Stack:** React Native, Expo Router, NestJS, Expo Speech TTS, Speech-to-Text, LLM Coaching Engine.
+
+### 10. OwnSpeedtest — Zero-Dependency Network CLI
+- **Category:** B2B SaaS & Systems (Open Source)
+- **Role:** Systems Tooling Author
+- **Architecture:** Terminal diagnostic tool built strictly with native Node.js 18+ built-in modules (zero npm dependencies) to benchmark TCP/TLS handshake latency, jitter, download, and upload throughput against custom Cloudflare and self-hosted endpoints.
+- **Tech Stack:** Native Node.js Built-ins, Zero Dependencies, TCP/TLS Diagnostics, Cloudflare Edge, Network Engineering.
+
+---
+
+## Technical Stack & Competency Matrix
+
+| Domain | Core Production Technologies |
+| :--- | :--- |
+| **Distributed AI & Audio ML** | ONNX Runtime (13 Models), Qdrant Vector DB, Apache Kafka, ClickHouse (ALS Collaborative Filtering), Valkey, PyTorch 2.x, FastConformer CTC, Whisper STT, Vision OCR |
+| **Backend & SaaS Architecture** | NestJS v11, Fastify, PostgreSQL (Schema-per-Tenant), Python 3.12 (FastAPI, uv, mypy strict), Docker Compose, Node.js Built-in CLI Tooling, TypeORM, Swagger |
+| **Mobile & Frontend** | React Native, Expo Router (SDK 54), SQLite (expo-sqlite v4), Next.js 16 (App Router + Turbopack), React 19, Tailwind CSS v4, NativeWind, GSAP 3, Zustand, TanStack Query |

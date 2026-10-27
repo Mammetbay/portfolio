@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -59,7 +60,7 @@ function MenuButton({
       onClick={onClick}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="text-[#E4FD97] hover:text-[#FF2A5F] transition-colors text-[20px] uppercase font-bold tracking-wider leading-none overflow-hidden cursor-pointer"
+      className="text-[#E4FD97] hover:text-[#FF2A5F] transition-colors text-[19px] uppercase font-bold tracking-wider leading-none overflow-hidden cursor-pointer"
       style={{
         height: "1.1em",
       }}
@@ -111,14 +112,15 @@ function MenuButton({
 export default function FloatingMenu({ items }: FloatingMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { locale, setLocale, t, locales } = useLanguage();
 
   const defaultItems: MenuItem[] = [
-    { label: "About", href: "#about-me" },
-    { label: "Works", href: "#projects" },
-    { label: "Stack", href: "#stack" },
-    { label: "Journey", href: "#experience" },
-    { label: "Terminal", href: "#terminal" },
-    { label: "Contact", href: "#contact" },
+    { label: t.nav.mobileMenu.about, href: "#about-me" },
+    { label: t.nav.mobileMenu.projects, href: "#projects" },
+    { label: t.nav.mobileMenu.experience, href: "#experience" },
+    { label: t.nav.mobileMenu.stack, href: "#stack" },
+    { label: t.nav.mobileMenu.terminal, href: "#terminal" },
+    { label: t.nav.mobileMenu.contact, href: "#contact" },
   ];
 
   const menuItems = items ?? defaultItems;
@@ -150,14 +152,14 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
   return (
     <motion.div
       ref={containerRef}
-      className="fixed bottom-6 left-1/2 z-[100] md:hidden select-none"
+      className="fixed bottom-6 left-1/2 z-[100] md:hidden select-none max-w-[calc(100vw-24px)]"
       style={{ x: "-50%", pointerEvents: "auto" }}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease }}
     >
       <motion.div
-        className="relative overflow-hidden flex flex-col shadow-2xl shadow-black/80"
+        className="relative overflow-hidden flex flex-col shadow-2xl shadow-black/80 max-w-[calc(100vw-24px)] max-h-[calc(100dvh-48px)]"
         onClick={() => {
           if (!isOpen) setIsOpen(true);
         }}
@@ -165,8 +167,8 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
           cursor: isOpen ? "default" : "pointer",
         }}
         animate={{
-          width: isOpen ? 290 : 154,
-          height: isOpen ? 320 : 48,
+          width: isOpen ? 300 : 154,
+          height: isOpen ? 375 : 48,
           borderRadius: isOpen ? 32 : 9999,
           scale: 1,
         }}
@@ -210,9 +212,9 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
           }}
         />
 
-        {/* Menu items */}
+        {/* Menu items & Language switcher */}
         <div
-          className="relative z-10 flex flex-col gap-4 items-center justify-center pt-3"
+          className="relative z-10 flex flex-col gap-3.5 items-center justify-center pt-4"
           style={{
             pointerEvents: isOpen ? "auto" : "none",
             opacity: isOpen ? 1 : 0,
@@ -222,13 +224,43 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
         >
           {menuItems.map((item, idx) => (
             <MenuButton
-              key={item.label}
+              key={`${item.label}-${idx}`}
               label={item.label}
               onClick={() => handleItemClick(item)}
               isOpen={isOpen}
               index={idx}
             />
           ))}
+
+          {/* Compact Mobile Language Switcher Row */}
+          <div
+            role="group"
+            aria-label={t.nav.languageLabel}
+            className="flex items-center gap-1 pt-2 pb-1"
+          >
+            {locales.map((loc) => {
+              const isActive = locale === loc.code;
+              return (
+                <button
+                  key={loc.code}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocale(loc.code);
+                  }}
+                  aria-label={`Switch language to ${loc.nativeName}`}
+                  title={loc.nativeName}
+                  className={`px-2.5 py-1 rounded-lg font-mono text-[11px] transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-[#E4FD97] text-[#141414] font-bold shadow-sm"
+                      : "text-neutral-400 hover:text-white bg-white/[0.06]"
+                  }`}
+                >
+                  {loc.shortLabel}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Bottom bar: Menu + hamburger */}
@@ -252,7 +284,7 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
             animate={{ color: isOpen ? "#E4FD97" : "#141414" }}
             transition={{ duration: 0.25, ease }}
           >
-            {isOpen ? "Close" : "Menu"}
+            {isOpen ? t.nav.mobileMenu.close : t.nav.mobileMenu.menu}
           </motion.span>
 
           <div className="relative w-[24px] h-[24px] flex items-center justify-center">

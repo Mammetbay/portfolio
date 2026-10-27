@@ -1,351 +1,355 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { ArrowUpRight, Terminal, Cpu, Play, Pause, Activity, GithubIcon } from './Icons';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import GradientASCII from './ui/GradientASCII';
+import {
+  ArrowUpRight,
+  Terminal,
+  Cpu,
+  Activity,
+  GithubIcon,
+  CheckCircle2,
+} from './Icons';
+import { useLanguage } from '@/i18n/LanguageContext';
 
-type ShowcaseTab = 'waveform' | 'architecture' | 'metrics';
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-const generateInitialBars = () =>
-  Array.from({ length: 48 }, (_, i) => {
-    const base = Math.sin(i * 0.22) * 0.4 + 0.5;
-    return Math.max(0.15, Math.min(0.95, base + (Math.random() * 0.2 - 0.1)));
-  });
+const HERO_ASCII_COLORS = ['#1b260c', '#4f6b18', '#9ec738', '#E4FD97', '#f7ffe0'];
 
 const Hero: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [activeTab, setActiveTab] = useState<ShowcaseTab>('waveform');
-  const [waveformBars, setWaveformBars] = useState<number[]>(generateInitialBars);
+  const sectionRef = useRef<HTMLElement>(null);
+  const primaryBtnRef = useRef<HTMLAnchorElement>(null);
+  const consoleRef = useRef<HTMLDivElement>(null);
+  const [pulseTick, setPulseTick] = useState<number>(0);
+  const { t } = useLanguage();
 
-  // Generate realistic dynamic audio waveform levels when playing
+  // Live telemetry subtle pulse
   useEffect(() => {
-    if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setWaveformBars((prev) =>
-        prev.map((val) => {
-          const delta = (Math.random() - 0.5) * 0.25;
-          return Math.max(0.12, Math.min(0.96, val + delta));
-        })
-      );
-    }, 120);
+    const timer = setInterval(() => {
+      setPulseTick((prev) => (prev + 1) % 100);
+    }, 1800);
+    return () => clearInterval(timer);
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+  // GSAP Entrance & ScrollTrigger Choreography
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
 
-  // Apple-style scroll-driven motion
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    damping: 30,
-    stiffness: 120,
-    mass: 0.8,
-  });
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        // Staggered editorial entrance
+        gsap.from('.hero-reveal', {
+          opacity: 0,
+          y: 28,
+          duration: 0.75,
+          stagger: 0.09,
+          ease: 'power3.out',
+        });
 
-  // Hero header fades and gently floats upward on scroll
-  const headerOpacity = useTransform(smoothProgress, [0, 0.35], [1, 0]);
-  const headerY = useTransform(smoothProgress, [0, 0.35], [0, -35]);
-  const headerScale = useTransform(smoothProgress, [0, 0.35], [1, 0.97]);
+        // Metric counter strip reveal
+        gsap.from('.hero-metric-card', {
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          stagger: 0.07,
+          delay: 0.35,
+          ease: 'power2.out',
+        });
 
-  // Showcase card lifts, tilts and scales smoothly into viewport focus
-  const cardScale = useTransform(smoothProgress, [0, 0.4], [0.96, 1.01]);
-  const cardY = useTransform(smoothProgress, [0, 0.4], [20, -10]);
+        // Console 3D perspective lift on scroll
+        if (consoleRef.current) {
+          gsap.fromTo(
+            consoleRef.current,
+            { y: 18, scale: 0.985 },
+            {
+              y: -12,
+              scale: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: consoleRef.current,
+                start: 'top 85%',
+                end: 'bottom 30%',
+                scrub: 0.6,
+              },
+            }
+          );
+        }
+
+        // Magnetic primary CTA
+        const btn = primaryBtnRef.current;
+        if (btn) {
+          const xTo = gsap.quickTo(btn, 'x', { duration: 0.35, ease: 'power3.out' });
+          const yTo = gsap.quickTo(btn, 'y', { duration: 0.35, ease: 'power3.out' });
+
+          const onMove = (e: MouseEvent) => {
+            const rect = btn.getBoundingClientRect();
+            const relX = e.clientX - (rect.left + rect.width / 2);
+            const relY = e.clientY - (rect.top + rect.height / 2);
+            xTo(relX * 0.2);
+            yTo(relY * 0.2);
+          };
+          const onLeave = () => {
+            xTo(0);
+            yTo(0);
+          };
+
+          btn.addEventListener('mousemove', onMove);
+          btn.addEventListener('mouseleave', onLeave);
+        }
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
-      ref={containerRef}
-      className="relative min-h-[140vh] flex flex-col items-center justify-start pt-32 sm:pt-40 pb-24 overflow-hidden"
+      ref={sectionRef}
       id="about-me"
+      className="relative w-full overflow-hidden border-b border-white/[0.07]"
     >
-      {/* Subtle, restrained specular lighting (Apple style, no cheap neon orbs) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-[#E4FD97]/[0.06] to-transparent blur-[120px] pointer-events-none -z-10" />
+      {/* Interactive React Bits <GradientASCII /> WebGL2 Background */}
+      <div className="absolute inset-0 z-0">
+        <GradientASCII
+          colors={HERO_ASCII_COLORS}
+          shape="horizon"
+          characters=" =+xX0S8#@"
+          cellSize={18}
+          density={0.82}
+          glyphOpacity={0.9}
+          gradientOpacity={0.85}
+          glow={0.35}
+          flicker={0.2}
+          softness={0.5}
+          flow={0.55}
+          speed={0.95}
+          grain={0.08}
+          mouseInteraction={true}
+          scrambleRadius={0.12}
+          clickEffect="wave"
+          intro={true}
+          fontFamily='"JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
+        />
+        {/* Subtle bottom transition into #141414 page background */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#141414]/25 via-transparent to-[#141414]"
+        />
+      </div>
 
-      {/* Editorial Hero Content */}
-      <motion.div
-        style={{ opacity: headerOpacity, y: headerY, scale: headerScale }}
-        className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center select-none"
-      >
-        {/* Availability Capsule */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs text-neutral-300 backdrop-blur-xl mb-6 shadow-sm"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-[#E4FD97] animate-pulse" />
-          <span className="font-mono text-[11px] text-neutral-300 tracking-wide">
-            Mammetbay — AI & Systems Architect
-          </span>
-          <span className="text-white/20">•</span>
-          <span className="text-[11px] text-[#E4FD97] font-medium">Available</span>
-        </motion.div>
-
-        {/* Master Headline with Apple-grade Typography */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-[-0.035em] text-white leading-[1.08] max-w-4xl"
-        >
-          Architecting <span className="text-[#E4FD97]">Speech AI</span> &{' '}
-          <br className="hidden sm:inline" />
-          High-Performance Systems.
-        </motion.h1>
-
-        {/* Crisp, Restrained Sub-headline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl font-normal leading-relaxed tracking-[-0.01em]"
-        >
-          Building from-scratch <strong className="text-white font-medium">FastConformer ASR</strong> (41.7M params) and neural acoustic speech pipelines for low-resource languages, backed by production Next.js and resilient microservices.
-        </motion.p>
-
-        {/* Tactile Action Pills (Spring response on press) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-wrap items-center justify-center gap-3.5 mt-8"
-        >
-          <a
-            href="#projects"
-            className="px-6 py-3 rounded-full bg-[#E4FD97] text-[#141414] font-semibold text-xs sm:text-sm tracking-tight hover:bg-[#ebffa3] active:scale-[0.97] transition-all flex items-center gap-2 shadow-lg shadow-[#E4FD97]/15"
-          >
-            <span>Explore Architectures</span>
-            <ArrowUpRight size={15} />
-          </a>
-
-          <a
-            href="#terminal"
-            className="px-6 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.97] text-neutral-200 border border-white/[0.08] font-medium text-xs sm:text-sm tracking-tight transition-all backdrop-blur-xl flex items-center gap-2"
-          >
-            <Terminal size={14} className="text-[#E4FD97]" />
-            <span>Interactive CLI</span>
-          </a>
-
-          <a
-            href="https://github.com/Mammetbay"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub Profile"
-            className="p-3 rounded-full bg-white/[0.04] hover:bg-white/[0.08] active:scale-[0.97] text-neutral-300 hover:text-white border border-white/[0.08] transition-all backdrop-blur-xl"
-          >
-            <GithubIcon size={16} />
-          </a>
-        </motion.div>
-
-        {/* Clean Spec Ticker */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.32 }}
-          className="mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[11px] font-mono text-neutral-500 uppercase tracking-wider"
-        >
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E4FD97]" />
-            <span>41.7M FastConformer CTC</span>
+      {/* Foreground Content Container */}
+      <div className="relative z-10 pt-24 sm:pt-36 pb-12 sm:pb-24 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
+        {/* Top Coordinate Eyebrow Bar */}
+        <div className="hero-reveal flex flex-wrap items-center justify-between gap-2.5 pb-4 sm:pb-5 mb-6 sm:mb-8 border-b border-white/[0.12] font-mono text-[10px] sm:text-[11px]">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 max-w-full">
+            <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-[#141414]/85 text-[#E4FD97] border border-[#E4FD97]/35 font-semibold backdrop-blur-md shadow-lg shadow-black/50 break-words">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E4FD97] animate-ping shrink-0" />
+              <span>{t.hero.eyebrowSys}</span>
+            </span>
+            <span className="hidden md:inline-flex items-center px-3.5 py-1.5 rounded-lg bg-[#141414]/85 text-white border border-white/[0.14] font-medium backdrop-blur-md shadow-lg shadow-black/50">
+              {t.hero.eyebrowIdentity}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
-            <span>119k+ Audio Dataset</span>
+          <div className="flex items-center">
+            <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg bg-[#141414]/85 text-[#E4FD97] border border-[#E4FD97]/30 font-semibold backdrop-blur-md shadow-lg shadow-black/50 break-words">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#E4FD97] shrink-0" />
+              <span>{t.hero.eyebrowAvailable}</span>
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF2A5F]" />
-            <span>PyTorch 2.6 Distributed DDP</span>
-          </div>
-        </motion.div>
-      </motion.div>
+        </div>
 
-      {/* Cinematic Scroll-Driven Showcase Window (Apple Hardware/Studio Style) */}
-      <motion.div
-        style={{ scale: cardScale, y: cardY }}
-        className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 z-10"
-      >
-        <div className="rounded-3xl bg-[#181818]/80 backdrop-blur-2xl border border-white/[0.08] border-t-white/[0.14] shadow-2xl shadow-black/80 overflow-hidden">
-          {/* Studio Console Header */}
-          <div className="px-5 sm:px-7 py-4 border-b border-white/[0.06] flex flex-wrap items-center justify-between gap-4 bg-white/[0.01]">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                <span className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                <span className="w-2.5 h-2.5 rounded-full bg-white/20" />
-              </div>
-              <span className="text-xs font-mono font-medium text-neutral-300 ml-2 flex items-center gap-2">
-                <Cpu size={13} className="text-[#E4FD97]" />
-                FastConformer ASR Engine v2.4
+        {/* Main Editorial Asymmetric Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+          {/* Left Column (7 cols): Personal Identity & Architectural Manifesto */}
+          <div className="lg:col-span-7 min-w-0 w-full flex flex-col items-start text-left">
+            <h1 className="hero-reveal font-display text-3xl sm:text-5xl xl:text-[4.25rem] font-extrabold tracking-[-0.035em] text-white leading-[1.04] drop-shadow-[0_4px_24px_rgba(0,0,0,0.85)] break-words w-full">
+              Mammetbay{' '}
+              <span className="text-[#E4FD97] underline decoration-[#E4FD97]/35 decoration-2 underline-offset-8">
+                Mammetbayev
               </span>
+              <span className="block text-xl sm:text-3xl xl:text-[2.35rem] text-neutral-100 font-bold mt-3 sm:mt-4 tracking-[-0.025em] leading-[1.18] break-words">
+                {t.hero.roleHeadline}
+              </span>
+            </h1>
+
+            <p className="hero-reveal mt-5 sm:mt-6 text-sm sm:text-lg text-neutral-200 max-w-2xl leading-relaxed font-sans font-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] break-words">
+              {t.hero.leadParagraphPrefix}
+              <strong className="text-white font-semibold">
+                {t.hero.leadHighlight1}
+              </strong>
+              {t.hero.leadParagraphMiddle1}
+              <strong className="text-white font-semibold">{t.hero.leadHighlight2}</strong>
+              {t.hero.leadParagraphMiddle2}
+              <strong className="text-white font-semibold">
+                {t.hero.leadHighlight3}
+              </strong>
+              {t.hero.leadParagraphSuffix}
+            </p>
+
+            {/* Action Row */}
+            <div className="hero-reveal flex flex-wrap items-center gap-2.5 sm:gap-3.5 mt-6 sm:mt-8 w-full">
+              <a
+                ref={primaryBtnRef}
+                href="#projects"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#E4FD97] hover:bg-[#effec1] text-[#141414] font-display font-bold text-sm tracking-tight transition-colors flex items-center justify-center text-center gap-2.5 shadow-xl shadow-[#E4FD97]/20"
+              >
+                <span>{t.hero.ctaExplore}</span>
+                <ArrowUpRight size={16} />
+              </a>
+
+              <a
+                href="#terminal"
+                className="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-3.5 rounded-xl bg-[#141414]/85 hover:bg-[#1F1F1F] text-neutral-100 border border-white/[0.15] font-mono text-xs sm:text-sm transition-all flex items-center gap-2 backdrop-blur-md"
+              >
+                <Terminal size={15} className="text-[#E4FD97] shrink-0" />
+                <span className="truncate">{t.hero.ctaCli}</span>
+              </a>
+
+              <a
+                href="https://github.com/Mammetbay"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 sm:flex-initial justify-center px-4 py-3.5 rounded-xl bg-[#141414]/75 hover:bg-white/[0.1] text-neutral-200 hover:text-white border border-white/[0.12] font-mono text-xs transition-all flex items-center gap-2 backdrop-blur-md"
+              >
+                <GithubIcon size={15} className="shrink-0" />
+                <span>@Mammetbay</span>
+              </a>
             </div>
 
-            {/* Segmented Control Tabs (Apple Style) */}
-            <div className="flex items-center bg-black/40 p-1 rounded-xl border border-white/[0.06] text-xs font-mono">
-              <button
-                onClick={() => setActiveTab('waveform')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  activeTab === 'waveform'
-                    ? 'bg-white/[0.1] text-[#E4FD97] font-semibold shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
-                }`}
-              >
-                Acoustic DSP
-              </button>
-              <button
-                onClick={() => setActiveTab('architecture')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  activeTab === 'architecture'
-                    ? 'bg-white/[0.1] text-[#E4FD97] font-semibold shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
-                }`}
-              >
-                Architecture
-              </button>
-              <button
-                onClick={() => setActiveTab('metrics')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  activeTab === 'metrics'
-                    ? 'bg-white/[0.1] text-[#E4FD97] font-semibold shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
-                }`}
-              >
-                Telemetry
-              </button>
+            {/* 4 High-Level Impact Pillars */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 w-full mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/[0.12]">
+              <div className="hero-metric-card min-w-0 overflow-hidden p-3 sm:p-3.5 rounded-xl bg-[#141414]/85 border border-white/[0.1] backdrop-blur-md">
+                <div className="font-mono text-[9px] sm:text-[10px] text-neutral-400 uppercase truncate">{t.hero.metrics.systemsLabel}</div>
+                <div className="font-display text-lg sm:text-2xl font-extrabold text-[#E4FD97] mt-1 break-words leading-tight">{t.hero.metrics.systemsValue}</div>
+                <div className="font-mono text-[10px] sm:text-[11px] text-neutral-300 mt-0.5 truncate">{t.hero.metrics.systemsSub}</div>
+              </div>
+
+              <div className="hero-metric-card min-w-0 overflow-hidden p-3 sm:p-3.5 rounded-xl bg-[#141414]/85 border border-white/[0.1] backdrop-blur-md">
+                <div className="font-mono text-[9px] sm:text-[10px] text-neutral-400 uppercase truncate">{t.hero.metrics.mobileLabel}</div>
+                <div className="font-display text-lg sm:text-2xl font-extrabold text-white mt-1 break-words leading-tight">{t.hero.metrics.mobileValue}</div>
+                <div className="font-mono text-[10px] sm:text-[11px] text-neutral-300 mt-0.5 truncate">{t.hero.metrics.mobileSub}</div>
+              </div>
+
+              <div className="hero-metric-card min-w-0 overflow-hidden p-3 sm:p-3.5 rounded-xl bg-[#141414]/85 border border-white/[0.1] backdrop-blur-md">
+                <div className="font-mono text-[9px] sm:text-[10px] text-neutral-400 uppercase truncate">{t.hero.metrics.lifecycleLabel}</div>
+                <div className="font-display text-lg sm:text-2xl font-extrabold text-white mt-1 break-words leading-tight">{t.hero.metrics.lifecycleValue}</div>
+                <div className="font-mono text-[10px] sm:text-[11px] text-neutral-300 mt-0.5 truncate">{t.hero.metrics.lifecycleSub}</div>
+              </div>
+
+              <div className="hero-metric-card min-w-0 overflow-hidden p-3 sm:p-3.5 rounded-xl bg-[#141414]/85 border border-white/[0.1] backdrop-blur-md">
+                <div className="font-mono text-[9px] sm:text-[10px] text-neutral-400 uppercase truncate">{t.hero.metrics.rdLabel}</div>
+                <div className="font-display text-lg sm:text-2xl font-extrabold text-[#FF2A5F] mt-1 break-words leading-tight">{t.hero.metrics.rdValue}</div>
+                <div className="font-mono text-[10px] sm:text-[11px] text-neutral-300 mt-0.5 truncate">{t.hero.metrics.rdSub}</div>
+              </div>
             </div>
           </div>
 
-          {/* Interactive Screen Body */}
-          <div className="p-6 sm:p-8 min-h-[300px] flex flex-col justify-between">
-            {activeTab === 'waveform' && (
-              <div className="space-y-6">
-                {/* Visualizer Header */}
-                <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
-                  <div className="flex items-center gap-2">
-                    <Activity size={14} className="text-[#E4FD97] animate-pulse" />
-                    <span>Real-Time Log-Mel Filterbanks (16 kHz • 80 Channels)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-[#E4FD97]/10 text-[#E4FD97] border border-[#E4FD97]/20 text-[10px]">
-                      LIVE DECODER
-                    </span>
-                  </div>
+          {/* Right Column (5 cols): Architect Identity & Engineering Focus Dossier */}
+          <div ref={consoleRef} className="lg:col-span-5 min-w-0 w-full">
+            <div className="bento-card rounded-2xl overflow-hidden shadow-2xl shadow-black/95 border border-white/[0.12] bg-[#141414]/90 backdrop-blur-xl">
+              {/* Dossier Header Bar */}
+              <div className="px-4 py-3 sm:py-3.5 bg-[#161616]/95 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF2A5F]/80 shrink-0" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#E4FD97]/80 shrink-0" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-white/25 shrink-0" />
+                  <span className="ml-1 sm:ml-2 font-mono text-[11px] text-neutral-300 font-semibold flex items-center gap-1.5 min-w-0 truncate">
+                    <Cpu size={13} className="text-[#E4FD97] shrink-0" />
+                    <span className="truncate">{t.hero.dossier.headerTitle}</span>
+                  </span>
                 </div>
 
-                {/* Animated Audio Spectrum Bars */}
-                <div className="h-28 w-full bg-black/40 rounded-2xl p-4 flex items-end justify-between gap-1 border border-white/[0.04] overflow-hidden">
-                  {waveformBars.map((height, idx) => (
-                    <motion.div
-                      key={idx}
-                      className="flex-1 rounded-full bg-gradient-to-t from-[#E4FD97] to-[#FF2A5F]"
-                      style={{
-                        height: `${Math.round(height * 100)}%`,
-                        opacity: 0.4 + height * 0.6,
-                      }}
-                      transition={{ duration: 0.1 }}
-                    />
-                  ))}
-                </div>
+                <span className="px-2.5 py-1 rounded-md bg-[#E4FD97]/15 text-[#E4FD97] font-mono text-[10px] font-bold border border-[#E4FD97]/30 shrink-0">
+                  {t.hero.dossier.verifiedBadge}
+                </span>
+              </div>
 
-                {/* Live Speech Recognition Transcript Simulation */}
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <button
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      className="p-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white transition-all shrink-0 active:scale-95"
-                      aria-label="Toggle audio playback"
-                    >
-                      {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-                    </button>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-mono uppercase text-neutral-500 tracking-wider">
-                        Decoded Output (Turkmen CTC)
+              {/* Dossier Body */}
+              <div className="p-4 sm:p-6 bg-dot-matrix min-h-[370px] flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+                    <div className="min-w-0">
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-[#E4FD97] block">
+                        {t.hero.dossier.identityLabel}
                       </span>
-                      <p className="text-sm font-medium text-white tracking-tight mt-0.5">
-                        &ldquo;Salam dünýä, bu FastConformer ses modeliniň hakyky wagt tanyş synagy.&rdquo;
+                      <h2 className="font-display text-lg sm:text-xl font-bold text-white mt-0.5 truncate">
+                        Mammetbay Mammetbayev
+                      </h2>
+                      <p className="font-mono text-[10px] sm:text-[11px] text-neutral-400 mt-0.5 break-words">
+                        {t.hero.dossier.roleSub}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs font-mono text-neutral-400 shrink-0 border-t sm:border-t-0 sm:border-l border-white/[0.06] pt-2 sm:pt-0 sm:pl-4">
-                    <div>
-                      <span className="text-neutral-500 block text-[10px]">LATENCY</span>
-                      <span className="text-[#E4FD97] font-semibold">8.4 ms</span>
+                  {/* Core Focus Areas */}
+                  <div className="space-y-2.5 font-mono text-xs">
+                    <div className="p-3 rounded-xl bg-[#141414]/95 border border-white/[0.08]">
+                      <div className="flex flex-wrap items-start justify-between gap-1 text-[#E4FD97] mb-1">
+                        <span className="font-bold flex items-center gap-1.5 break-words">
+                          <CheckCircle2 size={13} className="text-[#E4FD97] shrink-0 mt-0.5" />
+                          <span>{t.hero.dossier.focus1Title}</span>
+                        </span>
+                        <span className="text-[10px] text-neutral-400 shrink-0">{t.hero.dossier.focus1Tag}</span>
+                      </div>
+                      <p className="text-[11px] text-neutral-300 leading-relaxed font-sans break-words">
+                        {t.hero.dossier.focus1Desc}
+                      </p>
                     </div>
-                    <div>
-                      <span className="text-neutral-500 block text-[10px]">CONFIDENCE</span>
-                      <span className="text-neutral-200 font-semibold">99.4%</span>
+
+                    <div className="p-3 rounded-xl bg-[#141414]/95 border border-white/[0.08]">
+                      <div className="flex flex-wrap items-start justify-between gap-1 text-white mb-1">
+                        <span className="font-bold flex items-center gap-1.5 break-words">
+                          <CheckCircle2 size={13} className="text-[#E4FD97] shrink-0 mt-0.5" />
+                          <span>{t.hero.dossier.focus2Title}</span>
+                        </span>
+                        <span className="text-[10px] text-[#E4FD97] shrink-0">{t.hero.dossier.focus2Tag}</span>
+                      </div>
+                      <p className="text-[11px] text-neutral-300 leading-relaxed font-sans break-words">
+                        {t.hero.dossier.focus2Desc}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-[#141414]/95 border border-white/[0.08]">
+                      <div className="flex flex-wrap items-start justify-between gap-1 text-[#FF2A5F] mb-1">
+                        <span className="font-bold flex items-center gap-1.5 break-words">
+                          <CheckCircle2 size={13} className="text-[#FF2A5F] shrink-0 mt-0.5" />
+                          <span>{t.hero.dossier.focus3Title}</span>
+                        </span>
+                        <span className="text-[10px] text-neutral-400 shrink-0">{t.hero.dossier.focus3Tag}</span>
+                      </div>
+                      <p className="text-[11px] text-neutral-300 leading-relaxed font-sans break-words">
+                        {t.hero.dossier.focus3Desc}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
 
-            {activeTab === 'architecture' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex flex-col justify-between">
-                  <span className="text-neutral-500 text-[10px] uppercase">01 / Subsampling</span>
-                  <div className="my-3">
-                    <h4 className="text-white font-bold text-sm">8x Temporal Depthwise</h4>
-                    <p className="text-neutral-400 text-[11px] mt-1 leading-relaxed">
-                      Reduces 80ms acoustic frame redundancy to accelerate downstream Macaron block throughput.
-                    </p>
-                  </div>
-                  <span className="text-[#E4FD97] text-[11px]">in_ch: 80 → out_ch: 384</span>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex flex-col justify-between">
-                  <span className="text-neutral-500 text-[10px] uppercase">02 / Conformer Blocks</span>
-                  <div className="my-3">
-                    <h4 className="text-white font-bold text-sm">12 Macaron Layers</h4>
-                    <p className="text-neutral-400 text-[11px] mt-1 leading-relaxed">
-                      Multi-head self-attention with relative sinusoidal positional encodings and depthwise convolutions.
-                    </p>
-                  </div>
-                  <span className="text-[#E4FD97] text-[11px]">d_model: 384, heads: 6</span>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] flex flex-col justify-between">
-                  <span className="text-neutral-500 text-[10px] uppercase">03 / CTC Linear Head</span>
-                  <div className="my-3">
-                    <h4 className="text-white font-bold text-sm">SentencePiece Unigram</h4>
-                    <p className="text-neutral-400 text-[11px] mt-1 leading-relaxed">
-                      Vocabulary optimized specifically for low-resource agglutinative Turkmen phoneme frequencies.
-                    </p>
-                  </div>
-                  <span className="text-[#FF2A5F] text-[11px]">vocab_size: 1,025 tokens</span>
+                {/* Dossier Footer */}
+                <div className="mt-4 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] text-neutral-400">
+                  <span className="flex items-center gap-1.5">
+                    <Activity size={12} className="text-[#E4FD97] shrink-0" />
+                    <span>{t.hero.dossier.systemsOnline} ({98 + (pulseTick % 2)}.9% SYNC)</span>
+                  </span>
+                  <a
+                    href="#projects"
+                    className="text-[#E4FD97] hover:underline flex items-center gap-1 font-semibold shrink-0"
+                  >
+                    <span>{t.hero.dossier.browseAll}</span>
+                    <ArrowUpRight size={11} />
+                  </a>
                 </div>
               </div>
-            )}
-
-            {activeTab === 'metrics' && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-xs">
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-neutral-500 text-[10px] uppercase block">Parameters</span>
-                  <span className="text-xl sm:text-2xl font-bold text-white mt-1 block">41.7M</span>
-                  <span className="text-[#E4FD97] text-[10px]">Small Preset</span>
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-neutral-500 text-[10px] uppercase block">Audio Corpus</span>
-                  <span className="text-xl sm:text-2xl font-bold text-white mt-1 block">119,847</span>
-                  <span className="text-neutral-400 text-[10px]">Validated Samples</span>
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-neutral-500 text-[10px] uppercase block">Test Pass Rate</span>
-                  <span className="text-xl sm:text-2xl font-bold text-[#E4FD97] mt-1 block">90 / 90</span>
-                  <span className="text-neutral-400 text-[10px]">0 Failures • 0 Skips</span>
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-                  <span className="text-neutral-500 text-[10px] uppercase block">Distributed Mode</span>
-                  <span className="text-xl sm:text-2xl font-bold text-[#FF2A5F] mt-1 block">PyTorch DDP</span>
-                  <span className="text-neutral-400 text-[10px]">Multi-Process Sync</span>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };

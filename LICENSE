@@ -1,0 +1,47 @@
+PROPRIETARY PORTFOLIO & SOURCE-AVAILABLE LICENSE
+All Rights Reserved
+
+Copyright (c) 2026 Mammetbay Mammetbayev (https://mammetbay.dev)
+Contact: mammetbaydev@gmail.com | GitHub: https://github.com/Mammetbay
+
+1. OWNERSHIP & EXCLUSIVE RIGHTS
+This repository, including its source code, architectural structure, visual
+design, custom UI layouts, case study copy, multi-language translations
+(Turkmen, English, Russian, Turkish), and personal branding assets (collectively,
+the "Software"), is the exclusive intellectual property of Mammetbay Mammetbayev.
+All rights, title, and interest in and to the Software are strictly reserved by
+Mammetbay Mammetbayev.
+
+2. LIMITED RIGHT OF INSPECTION (SOURCE-AVAILABLE ONLY)
+The Software is published publicly on GitHub solely as an engineering portfolio
+and architectural showcase. You are granted a limited, non-exclusive, revocable
+right to view and inspect the source code on GitHub for personal educational,
+code-review, or hiring evaluation purposes only, in accordance with the standard
+GitHub Terms of Service.
+
+3. STRICT PROHIBITIONS
+Without the prior, explicit written permission of Mammetbay Mammetbayev, you may
+NOT:
+  a) Copy, clone, fork for deployment, redistribute, or republish the Software
+     or any substantial portion of its codebase, UI design, or layout;
+  b) Use this repository as a template, starter kit, or foundation for your own
+     personal portfolio, agency website, or commercial product;
+  c) Modify, adapt, rebrand, or create derivative works based on the Software;
+  d) Host, deploy, or mirror the Software on any public or private server,
+     domain, or cloud platform;
+  e) Use the name "Mammetbay Mammetbayev", project case studies, metrics, or
+     associated biographical data to misrepresent authorship or identity.
+
+4. THIRD-PARTY OPEN-SOURCE DEPENDENCIES
+External libraries and open-source packages referenced in `package.json` (such as
+Next.js, React, Tailwind CSS, OGL, GSAP, Framer Motion, and React Bits shader
+primitives) remain the property of their respective authors and are governed by
+their own upstream open-source licenses.
+
+5. DISCLAIMER OF WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE.
