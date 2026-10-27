@@ -7,21 +7,18 @@ import JsonLdSchema from '@/components/JsonLdSchema';
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-display',
-  weight: ['500', '600', '700', '800'],
   display: 'swap',
 });
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin', 'latin-ext', 'cyrillic-ext'],
   variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'latin-ext', 'cyrillic'],
   variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
