@@ -214,12 +214,14 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
 
         {/* Menu items & Language switcher */}
         <div
-          className="relative z-10 flex flex-col gap-3.5 items-center justify-center pt-4"
+          className="relative z-10 flex flex-col gap-3.5 items-center justify-center min-h-0 overflow-hidden"
           style={{
             pointerEvents: isOpen ? "auto" : "none",
             opacity: isOpen ? 1 : 0,
-            flex: isOpen ? 1 : 0,
-            overflow: "hidden",
+            flex: isOpen ? "1 1 auto" : "0 0 0px",
+            height: isOpen ? "auto" : 0,
+            maxHeight: isOpen ? 340 : 0,
+            paddingTop: isOpen ? 16 : 0,
           }}
         >
           {menuItems.map((item, idx) => (
@@ -265,7 +267,7 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
 
         {/* Bottom bar: Menu + hamburger */}
         <motion.div
-          className="relative z-10 flex items-center justify-between w-full shrink-0 cursor-pointer"
+          className="relative z-10 flex items-center justify-between w-full h-[48px] shrink-0 cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(!isOpen);
@@ -273,21 +275,19 @@ export default function FloatingMenu({ items }: FloatingMenuProps) {
           animate={{
             paddingLeft: isOpen ? 24 : 20,
             paddingRight: isOpen ? 24 : 20,
-            paddingBottom: isOpen ? 16 : 0,
-            height: 48,
+            marginBottom: isOpen ? 6 : 0,
           }}
           transition={{ duration: 0.6, ease }}
-          style={{ alignItems: "center" }}
         >
           <motion.span
-            className="text-[13px] tracking-wider uppercase font-extrabold leading-none"
+            className="text-[13px] tracking-wider uppercase font-extrabold leading-none flex items-center h-full"
             animate={{ color: isOpen ? "#E4FD97" : "#141414" }}
             transition={{ duration: 0.25, ease }}
           >
             {isOpen ? t.nav.mobileMenu.close : t.nav.mobileMenu.menu}
           </motion.span>
 
-          <div className="relative w-[24px] h-[24px] flex items-center justify-center">
+          <div className="relative w-[24px] h-[24px] flex items-center justify-center shrink-0">
             <motion.span
               className="absolute block w-[18px] h-[2px] rounded-full"
               animate={{

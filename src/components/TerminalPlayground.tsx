@@ -29,10 +29,14 @@ const TerminalPlaygroundContent: React.FC = () => {
       ),
     },
   ]);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const outputContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (history.length <= 1) return;
+    const container = outputContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
   }, [history]);
 
   const executeCommand = (rawCmd: string) => {
@@ -357,7 +361,10 @@ const TerminalPlaygroundContent: React.FC = () => {
         </div>
 
         {/* Output Area */}
-        <div className="p-4 sm:p-6 h-80 sm:h-96 overflow-y-auto overflow-x-hidden font-mono text-xs sm:text-sm space-y-4 bg-[#0E0E0E]/90 break-words [overflow-wrap:anywhere]">
+        <div
+          ref={outputContainerRef}
+          className="p-4 sm:p-6 h-80 sm:h-96 overflow-y-auto overflow-x-hidden font-mono text-xs sm:text-sm space-y-4 bg-[#0E0E0E]/90 break-words [overflow-wrap:anywhere]"
+        >
           {history.map((item, idx) => (
             <div key={idx} className="space-y-1.5 min-w-0">
               <div className="flex items-center gap-2 text-neutral-400 min-w-0 flex-wrap">
@@ -368,7 +375,6 @@ const TerminalPlaygroundContent: React.FC = () => {
               {item.output && <div className="pl-3 sm:pl-5 break-words [overflow-wrap:anywhere] min-w-0">{item.output}</div>}
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
 
         {/* Input Form */}
