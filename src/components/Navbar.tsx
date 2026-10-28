@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
-import { Terminal, Layers, Code2, Workflow, Sparkles, GithubIcon, ArrowUpRight } from './Icons';
+import { Terminal, Layers, Code2, Workflow, Sparkles, GithubIcon, ArrowUpRight, BrandLogo } from './Icons';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 const Navbar: React.FC = () => {
@@ -102,9 +102,7 @@ const Navbar: React.FC = () => {
         >
           {/* Left: Architectural Brand Identity */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3.5 group min-w-0 shrink">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#E4FD97] text-[#141414] flex items-center justify-center font-display font-extrabold text-xs sm:text-sm tracking-tighter group-hover:scale-105 transition-transform shadow-md shadow-[#E4FD97]/15 shrink-0">
-              MB
-            </div>
+            <BrandLogo className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl group-hover:scale-105 transition-transform shadow-md shadow-black/40 shrink-0" />
             <div className="flex flex-col min-w-0">
               <span className="font-display font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5 sm:gap-2 leading-none truncate">
                 MAMMETBAY

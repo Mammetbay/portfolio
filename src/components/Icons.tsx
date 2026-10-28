@@ -249,3 +249,97 @@ export const GlobeIcon = createIcon(
   <path d="M12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Zm6.93,6h-2.95a15.65,15.65,0,0,0-1.38-3.56A8.03,8.03,0,0,1,18.93,8ZM12,4.07a14.09,14.09,0,0,1,1.91,3.93H10.09A14.09,14.09,0,0,1,12,4.07ZM4.26,14A7.82,7.82,0,0,1,4,12a7.82,7.82,0,0,1,.26-2h3.38a16.46,16.46,0,0,0-.14,2,16.46,16.46,0,0,0,.14,2ZM5.07,8h2.95A15.65,15.65,0,0,0,9.4,4.44,8.03,8.03,0,0,1,5.07,8ZM9.4,19.56A15.65,15.65,0,0,0,8.02,16H5.07A8.03,8.03,0,0,1,9.4,19.56ZM7.64,14a14.77,14.77,0,0,1-.14-2,14.77,14.77,0,0,1,.14-2h8.72a14.77,14.77,0,0,1,.14,2,14.77,14.77,0,0,1-.14,2Zm4.36,5.93a14.09,14.09,0,0,1-1.91-3.93h3.82A14.09,14.09,0,0,1,12,19.93Zm2.6-5.93H9.4a16.46,16.46,0,0,1-.14-2,16.46,16.46,0,0,1,.14-2h5.2a16.46,16.46,0,0,1,.14,2,16.46,16.46,0,0,1-.14,2Zm0,5.56A15.65,15.65,0,0,0,15.98,16h2.95A8.03,8.03,0,0,1,14.6,19.56ZM16.36,14a16.46,16.46,0,0,0,.14-2,16.46,16.46,0,0,0-.14-2h3.38a7.82,7.82,0,0,1,.26,2,7.82,7.82,0,0,1-.26,2Z" />
 );
 export const Globe = GlobeIcon;
+
+// 31. Brand Official Logo Emblem (Isometric Cube Mark)
+export interface BrandLogoProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+  className?: string;
+}
+
+export const BrandLogo: React.FC<BrandLogoProps> = ({
+  size = 36,
+  className = '',
+  ...props
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    aria-hidden="true"
+    {...props}
+  >
+    <rect width="100" height="100" rx="22" fill="#12161B" />
+    <path
+      d="M 50 10 L 83.2 29.2 L 66.6 38.8 L 50 29.2 L 33.4 38.8 L 16.8 29.2 Z"
+      fill="#08B478"
+    />
+    <path
+      d="M 50 29.2 L 66.6 38.8 L 50 48.4 L 33.4 38.8 Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M 15.4 32.6 L 43.2 48.6 L 43.2 58.1 L 15.4 74.1 L 15.4 62.5 L 31.3 53.4 L 15.4 44.2 Z"
+      fill="#08B478"
+    />
+    <path
+      d="M 17.7 76.9 L 35.0 66.9 L 48.0 74.4 L 48.0 90.0 Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M 52.0 51.8 L 68.0 42.5 L 68.0 64.9 L 52.0 74.1 Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M 68.0 42.5 L 84.6 32.9 L 84.6 71.3 L 52.0 90.0 L 52.0 74.1 L 68.0 64.9 Z"
+      fill="#08B478"
+    />
+  </svg>
+);
+BrandLogo.displayName = 'BrandLogo';
+
+export const BrandLogoMonochrome: React.FC<BrandLogoProps> = ({
+  size = 36,
+  className = '',
+  ...props
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    aria-hidden="true"
+    {...props}
+  >
+    <rect width="100" height="100" rx="22" fill="#12161B" />
+    <path
+      d="M 50 10 L 83.2 29.2 L 66.6 38.8 L 50 29.2 L 33.4 38.8 L 16.8 29.2 Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M 50 29.2 L 66.6 38.8 L 50 48.4 L 33.4 38.8 Z"
+      fill="#D4D4D8"
+    />
+    <path
+      d="M 15.4 32.6 L 43.2 48.6 L 43.2 58.1 L 15.4 74.1 L 15.4 62.5 L 31.3 53.4 L 15.4 44.2 Z"
+      fill="#FFFFFF"
+    />
+    <path
+      d="M 17.7 76.9 L 35.0 66.9 L 48.0 74.4 L 48.0 90.0 Z"
+      fill="#D4D4D8"
+    />
+    <path
+      d="M 52.0 51.8 L 68.0 42.5 L 68.0 64.9 L 52.0 74.1 Z"
+      fill="#D4D4D8"
+    />
+    <path
+      d="M 68.0 42.5 L 84.6 32.9 L 84.6 71.3 L 52.0 90.0 L 52.0 74.1 L 68.0 64.9 Z"
+      fill="#FFFFFF"
+    />
+  </svg>
+);
+BrandLogoMonochrome.displayName = 'BrandLogoMonochrome';

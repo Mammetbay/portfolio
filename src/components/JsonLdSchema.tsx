@@ -17,6 +17,7 @@ export default function JsonLdSchema() {
         description:
           'Software Architect & AI Systems Engineer specializing in distributed AI systems, multi-tenant B2B SaaS platforms, cross-platform mobile engineering, and neural speech AI.',
         url: 'https://mammetbay.dev',
+        image: 'https://mammetbay.dev/logo.jpg',
         email: 'mailto:mammetbaydev@gmail.com',
         address: {
           '@type': 'PostalAddress',
@@ -55,6 +56,7 @@ export default function JsonLdSchema() {
         name: 'Mammetbay Mammetbayev — Software Architect & AI Systems Engineer',
         description:
           'Architectural portfolio and system specifications of Mammetbay Mammetbayev. Featuring 10 production systems across distributed AI, multi-tenant SaaS, and cross-platform mobile.',
+        image: 'https://mammetbay.dev/logo-banner.jpg',
         inLanguage: ['tk', 'en', 'ru', 'tr'],
         publisher: {
           '@id': 'https://mammetbay.dev/#person',
@@ -66,6 +68,10 @@ export default function JsonLdSchema() {
         url: 'https://mammetbay.dev',
         mainEntity: {
           '@id': 'https://mammetbay.dev/#person',
+        },
+        primaryImageOfPage: {
+          '@type': 'ImageObject',
+          url: 'https://mammetbay.dev/logo-banner.jpg',
         },
       },
       {

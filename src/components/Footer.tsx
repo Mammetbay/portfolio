@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowUp, GithubIcon, InstagramIcon, Play } from './Icons';
+import { ArrowUp, GithubIcon, InstagramIcon, Play, BrandLogo } from './Icons';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 const Footer: React.FC = () => {
@@ -17,9 +17,7 @@ const Footer: React.FC = () => {
         {/* Brand & Tagline */}
         <div className="flex flex-col items-center md:items-start gap-2.5 min-w-0 max-w-full">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#E4FD97] text-[#141414] flex items-center justify-center font-display font-extrabold text-xs shrink-0">
-              MB
-            </div>
+            <BrandLogo className="w-8 h-8 rounded-xl shadow-md shadow-black/40 shrink-0" />
             <span className="font-display font-bold text-base tracking-tight text-white break-words">
               MAMMETBAY MAMMETBAYEV
             </span>

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./public/logo-banner.jpg" alt="mammetbay.dev — Mammetbay Mammetbayev" width="100%" />
+</p>
+
 # Mammetbay Mammetbayev — Systems Architectural Portfolio
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.5-black?style=flat-square&logo=next.js)](https://nextjs.org/)
@@ -66,7 +70,12 @@ This platform is engineered as a high-performance, dark-aesthetic showcase prese
 mammetbay_dev/
 ├── public/
 │   ├── favicon.ico
-│   └── llms.txt                     # Generative Engine Optimization (GEO) manifest
+│   ├── llms.txt                     # Generative Engine Optimization (GEO) manifest
+│   ├── logo.svg                     # Official emerald & white isometric cube emblem (SVG)
+│   ├── logo-monochrome.svg          # Official monochrome white isometric cube emblem (SVG)
+│   ├── logo.jpg                     # Square high-resolution brand mark
+│   ├── logo-monochrome.jpg          # Square monochrome brand mark
+│   └── logo-banner.jpg              # 16:9 official brand showcase banner
 ├── src/
 │   ├── app/
 │   │   ├── globals.css              # Tailwind v4 theme tokens & glassmorphism

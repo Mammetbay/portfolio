@@ -73,6 +73,14 @@ export const metadata: Metadata = {
       'x-default': 'https://mammetbay.dev',
     },
   },
+  icons: {
+    icon: [
+      { url: '/logo.svg', type: 'image/svg+xml' },
+      { url: '/logo.jpg', type: 'image/jpeg' },
+    ],
+    shortcut: ['/logo.svg'],
+    apple: [{ url: '/logo.jpg', type: 'image/jpeg' }],
+  },
   openGraph: {
     title: 'Mammetbay Mammetbayev — Software Architect & AI Systems Engineer',
     description:
@@ -82,6 +90,20 @@ export const metadata: Metadata = {
     locale: 'tk_TM',
     alternateLocale: ['en_US', 'ru_RU', 'tr_TR'],
     type: 'website',
+    images: [
+      {
+        url: '/logo-banner.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Mammetbay Mammetbayev — Software Architect & AI Systems Engineer (mammetbay.dev)',
+      },
+      {
+        url: '/logo.jpg',
+        width: 1024,
+        height: 1024,
+        alt: 'mammetbay.dev Official Brand Emblem',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -89,6 +111,7 @@ export const metadata: Metadata = {
     description:
       'Architectural portfolio of Mammetbay Mammetbayev. Distributed AI, multi-tenant SaaS, and cross-platform mobile systems.',
     creator: '@mammetbay_dev',
+    images: ['/logo-banner.jpg'],
   },
   robots: {
     index: true,
