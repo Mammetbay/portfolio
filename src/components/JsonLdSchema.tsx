@@ -139,7 +139,7 @@ export default function JsonLdSchema() {
               name: 'StudyMate AI — Multi-Modal Student Companion',
               applicationCategory: 'EducationApplication',
               operatingSystem: 'Android, iOS',
-              url: 'https://github.com/Mammetbay',
+              url: 'https://github.com/Mammetbay/study-mate-ai/',
               description:
                 'Open-source, local-first mobile study assistant with Whisper STT lecture recording, Vision OCR notes parsing, and SM-2 spaced repetition.',
               author: {
